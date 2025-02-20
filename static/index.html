@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication</title>
+</head>
+<body>
+    <h1>Authentication System</h1>
+
+    <!-- Registration Form -->
+    <h2>Register</h2>
+    <form id="register-form">
+        <input type="email" id="register-email" placeholder="Email" required><br>
+        <input type="password" id="register-password" placeholder="Password" required><br>
+        <button type="submit">Register</button>
+    </form>
+
+    <h2>Verify OTP</h2>
+    <form id="verify-otp-form" style="display:none;">
+        <input type="text" id="verify-email" placeholder="Email" required><br>
+        <input type="text" id="otp" placeholder="OTP" required><br>
+        <input type="password" id="verify-password" placeholder="Password" required><br>
+        <button type="submit">Verify OTP</button>
+    </form>
+
+    <!-- Login Form -->
+    <h2>Login</h2>
+    <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required><br>
+        <input type="password" id="login-password" placeholder="Password" required><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <h2>User Details</h2>
+    <button id="get-user-details" style="display:none;">Get User Details</button>
+    <div id="user-details" style="display:none;">
+        <p id="username"></p>
+        <p id="email"></p>
+    </div>
+
+    <h2>Logout</h2>
+    <button id="logout" style="display:none;">Logout</button>
+
+    <script>
+        // Function to get the CSRF token from the cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Register user
+        document.getElementById("register-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("register-email").value;
+            const password = document.getElementById("register-password").value;
+            const csrfToken = getCookie("csrftoken");  // Get CSRF token
+
+            const response = await fetch("http://127.0.0.1:8000/api/register/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,  // Add CSRF token to the request headers
+                },
+                body: JSON.stringify({ email, password }),
+                credentials: "include", // Include cookies for authentication
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message);
+                document.getElementById("verify-otp-form").style.display = "block";
+            } else {
+                alert("Error: " + data.detail);
+            }
+        });
+
+        // Verify OTP
+        document.getElementById("verify-otp-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("verify-email").value;
+            const otp = document.getElementById("otp").value;
+            const password = document.getElementById("verify-password").value;
+            const csrfToken = getCookie("csrftoken");  // Get CSRF token
+
+            const response = await fetch("http://127.0.0.1:8000/api/register/verify/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,  // Add CSRF token to the request headers
+                },
+                body: JSON.stringify({ email, otp, password }),
+                credentials: "include", // Include cookies for authentication
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message);
+            } else {
+                alert("Error: " + data.error);
+            }
+        });
+
+        // Login user
+        document.getElementById("login-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("login-email").value;
+            const password = document.getElementById("login-password").value;
+            const csrfToken = getCookie("csrftoken");  // Get CSRF token
+
+            const response = await fetch("http://127.0.0.1:8000/api/login/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,  // Add CSRF token to the request headers
+                },
+                body: JSON.stringify({ email, password }),
+                credentials: "include", // Include cookies for authentication
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message);
+                document.getElementById("get-user-details").style.display = "block";
+                document.getElementById("logout").style.display = "block";
+            } else {
+                alert("Error: " + data.detail);
+            }
+        });
+
+        // Get User Details
+        document.getElementById("get-user-details").addEventListener("click", async () => {
+            const response = await fetch("http://127.0.0.1:8000/api/me/", {
+                method: "GET",
+                credentials: "include", // Include cookies for authentication
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                document.getElementById("username").textContent = "Username: " + data.username;
+                document.getElementById("email").textContent = "Email: " + data.email;
+                document.getElementById("user-details").style.display = "block";
+            } else {
+                alert("Error: " + data.detail);
+            }
+        });
+
+        // Logout user
+        document.getElementById("logout").addEventListener("click", async () => {
+            const csrfToken = getCookie("csrftoken");  // Get CSRF token
+
+            const response = await fetch("http://127.0.0.1:8000/api/logout/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken,  // Add CSRF token to the request headers
+                },
+                credentials: "include", // Include cookies for logout
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert(data.message);
+                document.getElementById("get-user-details").style.display = "none";
+                document.getElementById("logout").style.display = "none";
+                document.getElementById("user-details").style.display = "none";
+            } else {
+                alert("Error: " + data.detail);
+            }
+        });
+    </script>
+</body>
+</html>
