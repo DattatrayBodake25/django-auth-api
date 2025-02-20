@@ -47,7 +47,10 @@ python manage.py migrate
 ### 5. Run the Server
 ```sh
 python manage.py runserver
-The API will be available at http://127.0.0.1:8000/static/index.html/
+```
+The API will be available at
+```bash
+http://127.0.0.1:8000/static/index.html/
 ```
 
 ## API Endpoints
