@@ -26,140 +26,133 @@ This project implements a secure authentication system using Django and Django R
 ```sh
 git clone https://github.com/DattatrayBodake25/django-auth-api.git
 cd django-auth-api
+```
 
-2. Create a Virtual Environment
-sh
-Copy
-Edit
+### 2. Create a Virtual Environment
+```sh
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-3. Install Dependencies
-sh
-Copy
-Edit
+```
+
+### 3. Install Dependencies
+```sh
 pip install -r requirements.txt
-4. Apply Migrations
-sh
-Copy
-Edit
+```
+
+### 4. Apply Migrations
+```sh
 python manage.py migrate
-5. Run the Server
-sh
-Copy
-Edit
+```
+
+### 5. Run the Server
+```sh
 python manage.py runserver
 The API will be available at http://127.0.0.1:8000/
+```
 
-API Endpoints
-1. User Registration (OTP Verification)
+## API Endpoints
+### 1. User Registration (OTP Verification)
 POST /api/register/
-Accepts: email, password
-Sends OTP to the provided email.
-Example Request:
-json
-Copy
-Edit
+- Accepts: email, password
+- Sends OTP to the provided email.
+- Example Request:
+```json
 {
   "email": "user@example.com",
   "password": "securepassword"
 }
-Response:
-json
-Copy
-Edit
+```
+- Response:
+```json
 {
   "message": "OTP sent to email for verification."
 }
-2. Verify OTP
+```
+### 2. Verify OTP
 POST /api/register/verify/
-Accepts: email, otp, password
-Verifies OTP and creates user.
-Example Request:
-json
-Copy
-Edit
+- Accepts: email, otp, password
+- Verifies OTP and creates user.
+- Example Request:
+```json
 {
   "email": "user@example.com",
   "otp": "123456",
   "password": "securepassword"
 }
-Response:
-json
-Copy
-Edit
+```
+- Response:
+```json
 {
   "message": "User verified and registered successfully!"
 }
-3. Login
+```
+### 3. Login
 POST /api/login/
-Accepts: email, password
-Authenticates user and sets auth_token in cookies.
-Example Request:
-json
-Copy
-Edit
+- Accepts: email, password
+- Authenticates user and sets auth_token in cookies.
+- Example Request:
+```json
 {
   "email": "user@example.com",
   "password": "securepassword"
 }
-Response:
-json
-Copy
-Edit
+```
+- Response:
+```json
 {
   "message": "Login successful!"
 }
-4. Get Logged-in User Details
+```
+
+### 4. Get Logged-in User Details
 GET /api/me/
-Requires authentication via auth_token cookie.
-Response:
-json
-Copy
-Edit
+- Requires authentication via auth_token cookie.
+- Response:
+```json
 {
   "username": "user@example.com",
   "email": "user@example.com"
 }
-5. Logout
+```
+### 5. Logout
 POST /api/logout/
-Clears auth_token cookie.
-Response:
-json
-Copy
-Edit
+- Clears auth_token cookie.
+- Response:
+```json
 {
   "message": "Logout successful!"
 }
-Security Features
-CSRF Protection: CSRF token is required for all requests.
-HttpOnly Cookies: auth_token is stored in an HttpOnly, Secure cookie.
-OTP Expiry: OTPs expire after 5 minutes.
-API Documentation
+```
+
+## Security Features
+- CSRF Protection: CSRF token is required for all requests.
+- HttpOnly Cookies: auth_token is stored in an HttpOnly, Secure cookie.
+- OTP Expiry: OTPs expire after 5 minutes.
+
+
+## API Documentation
 Swagger UI is available at:
-
-arduino
-Copy
-Edit
+```arduino
 http://127.0.0.1:8000/swagger/
+```
 It includes:
+- Automatic CSRF token generation.
+- API testing interface.
 
-Automatic CSRF token generation.
-API testing interface.
-Frontend (Optional)
-A simple frontend (HTML + JavaScript) is included for API testing.
+## Frontend (Optional)
+- A simple frontend (HTML + JavaScript) is included for API testing.
 
 To test:
+- Open index.html in a browser.
+- Use the forms to register, verify OTP, login, and fetch user details.
 
-Open index.html in a browser.
-Use the forms to register, verify OTP, login, and fetch user details.
-Deployment
+## Deployment
 For production deployment:
+- Use PostgreSQL instead of SQLite.
+- Enable HTTPS and set SECURE_SSL_REDIRECT = True.
+- Use environment variables for secret keys and sensitive data.
 
-Use PostgreSQL instead of SQLite.
-Enable HTTPS and set SECURE_SSL_REDIRECT = True.
-Use environment variables for secret keys and sensitive data.
-
-Repository Structure
+## Repository Structure
 ``` bash
 /django-auth-api
 │── authentication/         # Django app for authentication
@@ -167,7 +160,4 @@ Repository Structure
 │── manage.py               # Django entry point
 │── requirements.txt        # Project dependencies
 │── README.md               # Documentation
-How to Submit
-Push your code to GitHub.
-Share the GitHub repository link.
-Upload a demo video on YouTube (unlisted) and share the link.
+```
